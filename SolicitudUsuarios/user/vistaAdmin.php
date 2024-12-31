@@ -19,7 +19,7 @@ $filtroSeleccionado = isset($_POST['filtro']) ? $_POST['filtro'] : 'Pendientes';
 $sql = "SELECT 
     s.id_solicitud, s.tipoDocumento, s.documento, s.nombres, s.apellidos, 
     s.telefono, s.correo, s.cargo, sis.nombreSistema, s.nombreUsuarioCopia, 
-    s.documentoUsuCopia, u.nombre, s.estado 
+    s.documentoUsuCopia, u.nombre, s.estado
     FROM solicitudes s 
     INNER JOIN usuarios u ON s.QuienSolicita = u.id
     INNER JOIN sistemas_de_informacion sis ON s.id_sistema = sis.id";
@@ -147,45 +147,47 @@ $resultado = $ver->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <script type="text/javascript">
-    // Al cambiar el filtro, crea un formulario y lo envía con el valor seleccionado
-    document.getElementById('asignarFiltro').addEventListener('change', function() {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = window.location.href;
+        // Al cambiar el filtro, crea un formulario y lo envía con el valor seleccionado
+        document.getElementById('asignarFiltro').addEventListener('change', function() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = window.location.href;
 
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'filtro';
-        input.value = this.value;
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'filtro';
+            input.value = this.value;
 
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-    });
-
-    // Al enviar un formulario de cambio de estado, envía los datos al servidor sin recargar la página
-    document.querySelectorAll('#cambioEstado').forEach(form => {
-        form.addEventListener("submit", function(evento) {
-            evento.preventDefault();  
-
-            const idEstado = new FormData(evento.target);  
-            const idEnviado = Object.fromEntries(idEstado.entries());  
-
-            // Envía los datos mediante fetch al servidor
-            fetch("cambioEstado.php", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(idEnviado),
-                })
-                .then(response => response.json())
-                .then(resultado => {
-                    alert(resultado.message); 
-                    location.reload();  
-                })
-                .catch(error => console.error("error: ", error));  
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
         });
-    });
-</script>
+
+        // Al enviar un formulario de cambio de estado, envía los datos al servidor sin recargar la página
+        document.querySelectorAll('#cambioEstado').forEach(form => {
+            form.addEventListener("submit", function(evento) {
+                evento.preventDefault();
+
+                const idEstado = new FormData(evento.target);
+                const idEnviado = Object.fromEntries(idEstado.entries());
+
+                // Envía los datos mediante fetch al servidor
+                fetch("cambioEstado.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(idEnviado),
+                    })
+                    .then(response => response.json())
+                    .then(resultado => {
+                        alert(resultado.message);
+                        location.reload();
+                    })
+                    .catch(error => console.error("error: ", error));
+            });
+        });
+    </script>
 
     <script src="../assets/plugins/jquery/jquery-3.5.1.min.js"></script>
     <script src="../assets/plugins/bootstrap/js/popper.min.js"></script>
