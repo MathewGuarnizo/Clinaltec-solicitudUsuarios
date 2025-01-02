@@ -6,7 +6,7 @@ include("funciones.php");
 $query = "SELECT * FROM usuarios ";
 
 if (isset($_POST["search"]["value"])) {
-    $query .= "WHERE Nombre LIKE '%" . $_POST["search"]["value"] . "%' OR Apellido LIKE '%" . $_POST["search"]["value"] . "%' ";
+    $query .= "WHERE Nombre LIKE '%" . $_POST["search"]["value"] . "%' OR Apellido LIKE '%" . $_POST["search"]["value"] . "% ' ";
 }
 
 if (isset($_POST["order"])) {
@@ -43,8 +43,8 @@ foreach ($resultado as $fila) {
     $sub_array[] = $fila["Email"];
     $sub_array[] = $imagen;
     $sub_array[] = $fila["Fecha"];
-    $sub_array[] = '<button type="button" name="editar" Id="' . $fila["Id"] . '" data-bs-toggle="modal" data-bs-target="#" class="btn btn-warning btn-sx edita"> Editar </button>';
-    $sub_array[] = '<button type="button" name="borrar" Id="' . $fila["Id"] . '" class="btn btn-danger btn-sx edita"> Borrar </button>';
+    $sub_array[] = '<button type="button" name="Editar" Id="' . $fila["Id"] . '" class="btn btn-warning btn-sx editar"> Editar </button>';
+    $sub_array[] = '<button type="button" name="Borrar" Id="' . $fila["Id"] . '" class="btn btn-danger btn-sx borrar"> Borrar </button>';
 
     $datos[] = $sub_array;
 }

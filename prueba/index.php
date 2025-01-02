@@ -54,18 +54,7 @@
             </tr>
           </thead>
           <tbody>
-            <?php
-              foreach($resultados as $resultado){
-                echo "<tr>";
-                echo "<th scope='row'>{$resultado[0]}</th>"; 
-                echo "<th>{$resultado['Nombre']}</th>";
-                echo "<th>{$resultado['Apellido']}</th>"; 
-                echo "<th>{$resultado['Telefono']}</th>"; 
-                echo "<th>{$resultado['Email']}</th>"; 
-                echo "<th>{$resultado['Imagen']}</th>"; 
-                echo "<th>{$resultado['Fecha']}</th>";
-              }
-            ?>
+
           </tbody>
         </table>
       </div>
@@ -121,6 +110,7 @@
           $("#Operacion").val("Crear");
           $("#Imagen_subida").html("");
         })
+
         var dataTable = $('#datosUsuarios').DataTable({
           "processing": true,
           "serverSide": true,
@@ -130,17 +120,38 @@
             type: "POST",
             dataSrc: function(json) {
               if (json.error) {
-                alert(json.error); 
+                alert(json.error);
                 return [];
               }
-              return json.data; 
+              return json.data;
             }
           },
-          "columnsDefs": [{
+          "columnsDefs": [
+            {
             "targets": [0, 3, 4],
             "orderable": false
-          }]
+            }
+          ],"language": {
+            "decimal": "",
+            "emptyTable": "No hay registros",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+            "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+            "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "Mostrar _MENU_ Entradas",
+            "loadingRecords": "Cargando...",
+            "processing": "Procesando...",
+            "search": "Buscar:",
+            "zeroRecords": "Sin resultados encontrados",
+            "paginate": {
+            "first": "Primero",
+            "last": "Ultimo",
+            "next": "Siguiente",
+            "previous": "Anterior"
+          }}
         });
+
         $(document).on('submit', '#formulario', function(event) {
           event.preventDefault();
           var nombres = $("#Nombre").val();
@@ -175,29 +186,53 @@
             alert("Algunos campos son obligatorios");
           }
         });
-        $(document).on('click', '.editar', function(){
+
+        //Editar Usuario
+        $(document).on('click', '.editar', function() {
           var Id_usuario = $(this).attr("Id");
           $.ajax({
             url: "obtener_registro.php",
             method: "POST",
-            data: {Id_usuario: Id_usuario},
-            dataType:"json",
-            success: function(data){
+            data: {
+              Id_usuario: Id_usuario
+            },
+            dataType: "json",
+            success: function(data) {
               $('#modalUsuario').modal('show');
-              $('#Nombre').val(data.Nombre);
-              $('#Apellido').val(data.Apellidos);
-              $('#Telefono').val(data.Telefono);
-              $('#Email').val(data.Email);
+              $('#Nombre').val(data.nombre);
+              $('#Apellido').val(data.apellido);
+              $('#Telefono').val(data.telefono);
+              $('#Email').val(data.email);
               $('.modal-title').text("Editar Usuario");
               $('#Id_usuario').val(Id_usuario);
-              $('#Imagen_subida').html(data.imagen_usuario);
+              $('#Imagen_subida').html(data.Imagen_usuario);
               $('#Action').val("Editar");
               $('#Operacion').val("Editar")
             },
-            error: function(jqXRH, textStatus, errorThrown){
+            error: function(jqXRH, textStatus, errorThrown) {
               console.log(textStatus, errorThrown);
             }
           })
+        })
+
+        // Borar usuario
+        $(document).on('click', '.borrar', function(){
+          var Id_usuario = $(this).attr("Id");
+          if(confirm("Estas seguro de borrar este registro" + Id_usuario)){
+            $.ajax({
+              url: "borrar.php",
+              method: "POST",
+              data: {
+                Id_usuario: Id_usuario
+              },
+              success: function(data) {
+                alert(data);
+                dataTable.ajax.reload();
+              }
+            });
+          } else {
+            return false;
+          }
         })
       });
     </script>

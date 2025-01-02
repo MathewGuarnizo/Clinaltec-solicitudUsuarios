@@ -13,14 +13,12 @@
 
     function obtener_nombre_imagen($Id_usuario){
         include('conexion.php');
-        $stmt = $con->prepare("SELECT Imagen FROM usuarios WHERE Id_usuario = :Id");
+        $stmt = $con->prepare("SELECT Imagen FROM usuarios WHERE Id = :id");
+        $stmt->bindParam(':id', $Id_usuario);
         $stmt->execute();
         $resultado = $stmt->fetch();
-        foreach($resultado as $fila){
-            return $fila["imagen"];
-        }
+        return $resultado['Imagen'];
     }
-
 
     function obtener_todos_registros(){
         include('conexion.php');
